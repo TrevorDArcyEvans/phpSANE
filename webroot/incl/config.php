@@ -14,9 +14,9 @@
 
     You should have received a copy of the GNU General Public License
     along with phpSANE.  If not, see <https://www.gnu.org/licenses/>.
-    
+
   */
-  
+
 // CONFIG --------------------------------------------------------------
 
 $temp_dir    = "./tmp/";                   //  temporary directory for storing preview files
@@ -72,14 +72,10 @@ add_page_size('A3', 297, 420);
 add_page_size('A4', 210, 297);
 add_page_size('A5', 148, 210);
 add_page_size('A6', 105, 148);
-//add_page_size('A7', 74, 105);
-//add_page_size('A8', 52, 74);
-//add_page_size('A9', 37, 52);
-//add_page_size('A10', 26, 37);
-//add_page_size('US Letter', 216, 279);
-//add_page_size('US Legal', 216, 356);
-//add_page_size('US Ledger', 432, 279);
-//add_page_size('US Tabloid', 279, 432);
+add_page_size('US Letter', 216, 279);
+add_page_size('US Legal', 216, 356);
+add_page_size('US Ledger', 432, 279);
+add_page_size('US Tabloid', 279, 432);
 $DEFAULT_PAGE_SIZE = 'A4';
 
 // enable features
@@ -164,7 +160,7 @@ $first=1;
 
 // first visit and clean/clear options
 if (isset($_POST['first'])) $first=$_POST['first'];
-if ($first) { 
+if ($first) {
   $action_clear = 1;
   $action_clean_tmp = 1;
   $first = 0;
@@ -206,12 +202,12 @@ foreach ($PAGE_SIZE_LIST as $index => $page_values) {
   {
     $default_page_width_mm = $page_values[1];
     $default_page_height_mm = $page_values[2];
-    
+
     $pos_x = $PREVIEW_WIDTH_MM - $default_page_width_mm;
     $pos_y = 0;
     $geometry_x = $PREVIEW_WIDTH_MM;
     $geometry_y = $default_page_height_mm;
-  } 
+  }
 }
 
 
@@ -309,7 +305,7 @@ if($scanner_ok) {
     unset($sane_cmd);
     ////////
 
-    
+
     // brightness
     $brightness_supported = false;
     $brightness_minimum = 0;
@@ -324,7 +320,7 @@ if($scanner_ok) {
         $brightness_minimum = $brightness_minmax[0];
         $brightness_maximum = $brightness_minmax[1];
         unset($brightness_minmax);
-        
+
         preg_match("/\[(.*?)\]/", $brightness_line, $brightness_default_array);
         $brightness_default = $brightness_default_array[1];
         unset($brightness_default_array);
@@ -333,8 +329,8 @@ if($scanner_ok) {
     }
     unset($sane_result_brightness);
     ////////
-    
-    
+
+
     // contrast
     $contrast_supported = false;
     $contrast_minimum = 0;
@@ -358,21 +354,21 @@ if($scanner_ok) {
     }
     unset($sane_result_contrast);
     ////////
-    
-    
+
+
     // modes
     $sane_result_mode = preg_grep('/--mode /', $sane_result_arr);
     $sane_result_mode = end($sane_result_mode);
     $modes = preg_replace('/^.*--mode ([a-z|]*)[ \t].*$/iU','$1', $sane_result_mode);
     $mode_list = explode('|', $modes);
-    
+
     preg_match("/\[(.*?)\]/", $sane_result_mode, $mode_default_array);
     $mode_default = $mode_default_array[1];
     unset($sane_result_mode);
     unset($mode_default_array);
     ////////
 
-    
+
     // resolutions
     $sane_result_reso = preg_grep('/--resolution /', $sane_result_arr);
     $sane_result_reso = end($sane_result_reso);
@@ -380,7 +376,7 @@ if($scanner_ok) {
     // get default resolution
     preg_match("/\[(.*?)\]/", $sane_result_reso, $resolution_default_array);
     $resolution_default = $resolution_default_array[1];
-    
+
     $start = strpos($sane_result_reso, "n") + 2;
     $length = strpos($sane_result_reso, "dpi") - $start;
     $list = "" . substr($sane_result_reso, $start,$length) . "";
@@ -431,10 +427,10 @@ if($scanner_ok) {
     }
     unset($length);
     ////////
-    
-    
+
+
     // save scanner configuration
-    save_scanner_config($scanner_name, 
+    save_scanner_config($scanner_name,
                         $mode_list, $mode_default,
                         $resolution_list, $resolution_default,
                         $brightness_supported, $brightness_default, $brightness_minimum, $brightness_maximum,
@@ -444,17 +440,17 @@ if($scanner_ok) {
   if($resolution == -1 || array_search($resolution_default, $resolution_list) === false) {
     $resolution = $resolution_default;
   }
-  
+
   if($mode == -1 || (array_search(strtolower($mode),array_map('strtolower', $mode_list)) === false)) {
     $mode = $mode_default;
   }
-  
+
   $do_brightness = $do_brightness && $brightness_supported; //disable brightness option when not available
   if($brightness == -1 || (($brightness < $brightness_minimum) || ($brightness > $brightness_maximum))) {
     $brightness = $brightness_default; //set to scanimage default when not set or out of range
   }
   unset($brightness_supported);
-  
+
   $do_contrast = $do_contrast && $contrast_supported; //disable contrast option when not available
   if($contrast == -1 || (($contrast < $contrast_minimum) || ($contrast > $contrast_maximum))) {
     $contrast = $contrast_default; //set to scanimage default when not set or out of range

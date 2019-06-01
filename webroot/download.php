@@ -14,12 +14,12 @@
 
     You should have received a copy of the GNU General Public License
     along with phpSANE.  If not, see <https://www.gnu.org/licenses/>.
-    
+
   */
-    
+
   include("incl/functions.php");
   include("incl/config.php");
-  
+
   if($do_file_download) {
     //create zip file
     $selected_file_paths = array();
@@ -38,8 +38,8 @@
       }
     }
   }
-  
-  
+
+
   /* creates a compressed zip file */
   function create_zip($files = array(),$destination = '') {
     //if the zip file already exists, return false
@@ -71,12 +71,12 @@
       foreach($valid_files as $file) {
         $zip->addFile($file, basename($file));
       }
-      
+
       //close the zip
       $zip->close();
-      
+
       ini_set('max_execution_time', $zip_timeout);
-      
+
       //check to make sure the file exists
       return file_exists($destination);
     }
