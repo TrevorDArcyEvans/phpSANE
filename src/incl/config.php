@@ -97,8 +97,8 @@ $do_format_pdf = true;
 // system config
 // =============
 $SCANIMAGE = "/usr/bin/scanimage"; //scanimage binary (sane)
-$GOCR      = "/opt/bin/gocr";      //optional ocr binary
-$PDFUNITE  = "/usr/local/bin/pdfunite"; //optional PDF merge binary
+$GOCR      = "/usr/bin/gocr";      //optional ocr binary
+$PDFUNITE  = "/usr/bin/pdfunite"; //optional PDF merge binary
 $PNMTOJPEG = "/usr/bin/pnmtojpeg"; //netpbm pnm to jpeg conversion binary
 $PNMTOTIFF = "/usr/bin/pnmtotiff"; //netpbm pnm to tiff conversion binary
 $PNMTOBMP  = "/usr/bin/ppmtobmp";  //netpbm ppm to bmp conversion binary
@@ -176,7 +176,8 @@ $mode = "Color";  // Lineart|Gray|Color
 $resolution = 300;
 $brightness = -1;
 $contrast = -1;
-$usr_opt = " --jpeg-quality 0";
+#$usr_opt = " --jpeg-quality 0";
+$usr_opt = "";
 $pos_x = 0;
 $pos_y = 0;
 $geometry_x = 0;
@@ -373,7 +374,7 @@ if($scanner_ok) {
     // change "|" separated string $list into array of values or generate a range of values.
     $length = strpos($list, "..");
     if ($length === false) {
-      $resolution_list = explode("|" , $list);
+      $resolution_list = asort(explode("|" , $list));
       $resolution_max = (int)end($resolution_list);
       $resolution_min = (int)reset($resolution_list);
     } else {
