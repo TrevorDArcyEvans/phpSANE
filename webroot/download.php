@@ -31,7 +31,7 @@
     }
     $zipfile_path =  $temp_dir . 'scanned_' . time() . '.zip';
     if(sizeof($selected_file_paths) > 0) {
-      create_zip($selected_file_paths, $zipfile_path, true);
+      create_zip($selected_file_paths, $zipfile_path);
       if(is_readable($zipfile_path)) {
         //output path to created file
         echo $zipfile_path;
@@ -41,9 +41,9 @@
   
   
   /* creates a compressed zip file */
-  function create_zip($files = array(),$destination = '',$overwrite = false) {
-    //if the zip file already exists and overwrite is false, return false
-    if(file_exists($destination) && !$overwrite) { return false; }
+  function create_zip($files = array(),$destination = '') {
+    //if the zip file already exists, return false
+    if(file_exists($destination)) { return false; }
     //vars
     $valid_files = array();
     //if files were passed in...
@@ -58,9 +58,12 @@
     }
     //if we have good files...
     if(count($valid_files)) {
+      // temporarily bump up maximum execution time for Raspberry Pi
+      $zip_timeout = ini_get('max_execution_time');
+      ini_set('max_execution_time', 600);
       //create the archive
       $zip = new ZipArchive();
-      if($zip->open($destination,$overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+      if($zip->open($destination, ZipArchive::CREATE) !== true) {
         return false;
       }
 
@@ -71,6 +74,8 @@
       
       //close the zip
       $zip->close();
+      
+      ini_set('max_execution_time', $zip_timeout);
       
       //check to make sure the file exists
       return file_exists($destination);
