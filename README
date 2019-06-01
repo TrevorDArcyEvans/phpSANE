@@ -1,0 +1,15 @@
+phpSANE is a web-based frontend for SANE written in HTML/PHP so you can scan with
+your web-browser. It also supports OCR.
+
+This project was originally written by "dfroe" and hosted on SourceForge at
+https://sourceforge.net/projects/phpsane/
+
+The original project appears to be defunct (no commits since 2013, no ability to
+raise tickets), and some changes were necessary to make it work correctly with
+current versions of SANE, thus I forked it to GitHub.
+
+Installation is simple: copy the entire directory hierarchy below src/ to the
+desired web root.  The service account for the HTTP daemon needs to be a member
+of whatever group owns scanners (typically "scanner").
+
+01 June 2019 Christopher Kobayashi <software+github@disavowed.jp>
