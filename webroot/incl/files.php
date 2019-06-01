@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with phpSANE.  If not, see <https://www.gnu.org/licenses/>.
-    
+
   */
 
 ?>
@@ -53,13 +53,13 @@
     </td>
     <td class='unit_spacer'></td>
   </tr>
-  <tr> 
+  <tr>
     <td>
       <table id="files_table">
         <thead>
           <tr>
           <?php
-            if($do_file_download || $do_file_delete) { 
+            if($do_file_download || $do_file_delete) {
               echo "      <th></th>";
             }
             echo "
@@ -75,16 +75,19 @@
           //create list of file names
           $files = array();
           foreach (new DirectoryIterator($save_dir) as $fileinfo) {
-            if(!is_dir($save_dir.$fileinfo)) {    
+            if(!is_dir($save_dir.$fileinfo)) {
               $files[$fileinfo->getMTime()] = $fileinfo->getFilename();
             }
           }
           krsort($files);
           $dirArray = array_values($files);
-          
+
           //loop through the array of files
           for($index=0; $index < count($dirArray); $index++) {
             $file_name = $dirArray[$index];
+            if ($file_name[0] == '.') {
+            	continue;
+            }
             $file_path = str_replace(" ", "%20", $save_dir.$dirArray[$index]);
             $file_size = size_readable(filesize($save_dir . $dirArray[$index]));
             $file_modtime = strftime('%c', filemtime($save_dir . $dirArray[$index]));
@@ -92,7 +95,7 @@
             if(!$do_file_timezone) {
               $file_modtime = str_replace(array(' CET', ' CEST'), '', $file_modtime);
             }
-            
+
             //file type and category
             $file_extention = findexts($dirArray[$index]);
             $file_category = '';
@@ -107,14 +110,14 @@
               case "": $file_extention = ucwords($lang[$lang_id][8]); break;
               default: $file_extention = strtoupper($file_extention)." ".$lang[$lang_id][55]; $file_category = "other"; break;
             }
-            
+
             //print file info
             echo "<tr";
             if($do_file_highlight_new && $file_new) {
               echo " class='file_row_new'";
             }
             echo ">";
-            if($do_file_download || $do_file_delete) { 
+            if($do_file_download || $do_file_delete) {
               echo "
               <td><input class='selected_files' type='checkbox' name='selected_files[]' value='$file_name' title='{$lang[$lang_id][56]}'></td>";
             }
@@ -140,7 +143,7 @@
     $splitFileName = explode(".", $filename);
     return (count($splitFileName) > 1) ? end($splitFileName) : '';
   }
-  
+
   /* Return human readable sizes
    *
    * @author      Aidan Lister <aidan@php.net>
@@ -159,20 +162,20 @@
       $systems['bi']['prefix'] = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
       $systems['bi']['size']   = 1024;
       $sys = isset($systems[$system]) ? $systems[$system] : $systems['si'];
-    
+
       // Max unit to display
       $depth = count($sys['prefix']) - 1;
       if ($max && false !== $d = array_search($max, $sys['prefix'])) {
           $depth = $d;
       }
-    
+
       // Loop
       $i = 0;
       while ($size >= $sys['size'] && $i < $depth) {
           $size /= $sys['size'];
           $i++;
       }
-    
+
       return sprintf($retstring, $size, $sys['prefix'][$i]);
   }
 ?>
