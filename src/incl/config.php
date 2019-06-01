@@ -374,7 +374,8 @@ if($scanner_ok) {
     // change "|" separated string $list into array of values or generate a range of values.
     $length = strpos($list, "..");
     if ($length === false) {
-      $resolution_list = asort(explode("|" , $list));
+      $resolution_list = explode("|" , $list);
+      asort($resolution_list);
       $resolution_max = (int)end($resolution_list);
       $resolution_min = (int)reset($resolution_list);
     } else {
