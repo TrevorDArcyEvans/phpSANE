@@ -203,7 +203,7 @@ foreach ($PAGE_SIZE_LIST as $index => $page_values) {
     $default_page_width_mm = $page_values[1];
     $default_page_height_mm = $page_values[2];
 
-    $pos_x = $PREVIEW_WIDTH_MM - $default_page_width_mm;
+    $pos_x = 0;
     $pos_y = 0;
     $geometry_x = $PREVIEW_WIDTH_MM;
     $geometry_y = $default_page_height_mm;
