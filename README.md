@@ -150,13 +150,84 @@ $ git clone https://github.com/christopherkobayashi/phpSANE.git
 
 * install pre-requisites
 ```
-$ sudo apt install php apache2 libapache2-mod-php sane sane-utils libsane-extras gocr -y
+sudo apt install php apache2 libapache2-mod-php sane sane-utils libsane-extras poppler-utils imagemagick -y
 ```
+
+* find scanner in (`dmesg`) boot log
+```
+$ dmesg
+...
+[    1.993595] usb 1-1.2: New USB device found, idVendor=0461, idProduct=038b
+[    1.993601] usb 1-1.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[    1.993605] usb 1-1.2: Product: USB Scanner
+[    1.993608] usb 1-1.2: Manufacturer: Primax
+...
+```
+
+  Take note of:
+    * idVendor=0461
+    * idProduct=038b
+
+* find scanner in usb devices
+```
+$ lsusb
+Bus 001 Device 006: ID 148f:7601 Ralink Technology, Corp. MT7601U Wireless Adapter
+Bus 001 Device 004: ID 0461:038b Primax Electronics, Ltd Xerox 2400 Onetouch
+Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
+Bus 001 Device 002: ID 0424:9512 Standard Microsystems Corp. SMC9512/9514 USB Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```
+
+  Take note of:
+    * idVendor=0461
+    * idProduct=038b
+
+* setup `udev` rule for scanner
+```
+$ sudo nano /etc/udev/rules.d/55-libsane.rules
+```
+  Add following:
+  ```
+  # from dmesg
+  ATTRS{idVendor}=="0461", ATTRS{idProduct}=="038b", MODE="0666", GROUP="scanner", ENV{libsane_matched}="yes"
+  ```
+  Note _idVendor_ and _idProduct_ are from `dmesg` log or list of usb devices
+
+* add _Apache2_ user to _scanner_ group
+```
+$ sudo adduser www-data scanner
+```
+
+* add yourself to scanner group
+```
+$ sudo adduser <your-user-name> scanner
+```
+
+* logout and login again so group membership takes effect
 
 * check scanner is detected
 ```
 $ scanimage -L
+device `genesys:libusb:001:004' is a Xerox OneTouch 2400 flatbed scanner
 ```
+
+  Take note of:
+    * scanner backend=_genesys_
+
+* add entry in _sane_ (_genesys_) backend
+```
+$ sudo nano /etc/sane.d/genesys.conf
+```
+  Format is:
+
+    `usb <idVendor> <idProduct>`
+
+  Add the following lines:
+  ```
+  # Primax Electronics, Ltd Xerox 2400 Onetouch
+  usb 0x0461 0x038b
+  ```
+  Note that entries have initial **0x**
 
 * copy files
 ```
@@ -176,6 +247,7 @@ $sudo adduser www-data scanner
 * CHECK let _Apache_ user write files
 ```
 $sudo chmod 775 /var/www/html/tmp
+$sudo chmod 775 /var/www/html/output
 ```
 
 * restart webserver
@@ -231,7 +303,50 @@ $ scanimage > test.ppm
 $ scanimage --format=tiff > test.tiff
 $ scanimage --format=jpeg > test.jpg
 $ scanimage --format=png > test.png
+$ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
 ```
+
+## Advanced troubleshooting
+<details>
+  <summary>Scanner setup</summary>
+
+  Based on information from:
+  * http://www.openfusion.net/linux/scansnap_1300i
+  * http://fbcorner.tuxfamily.org/linux.html
+  * https://askubuntu.com/questions/192134/iscan-only-runs-as-root
+  * https://www.johndstech.com/how-to/geek-friday-setting-up-epson-scanning-on-raspberry-pi/
+
+</details>
+
+
+* What does webserver see?
+
+    http://[your-server-ip]/diag.php
+
+
+  This is the output of:
+  ```
+  scanimage -L
+  ```
+
+* Check device permissions
+  ```
+  $ sudo scanimage -L
+  device `genesys:libusb:001:004' is a Xerox OneTouch 2400 flatbed scanner
+
+  # note udev path
+
+  $ sudo ls -al /dev/bus/usb/001/004
+  crw-rw-rw- 1 root scanner 189, 3 Aug 23 17:38 /dev/bus/usb/001/004
+
+  # device is owned by 'scanner' group'
+  ```
+
+* Apache logs
+  ```
+  $ sudo cat /var/log/apache2/error.log
+  ```
+
 
 ## Useful links
 * https://help.ubuntu.com/community/sane
