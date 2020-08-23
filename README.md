@@ -299,7 +299,7 @@ $ scanimage -V
 
 * scan an image
 ```
-$ scanimage > test.ppm
+$ scanimage > test.pnm
 $ scanimage --format=tiff > test.tiff
 $ scanimage --format=jpeg > test.jpg
 $ scanimage --format=png > test.png
