@@ -344,17 +344,17 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
   ```
 
 * Check group membership
-```
-# you
-$ groups
-<your-user-name> sudo audio scanner saned
+  ```
+  # you
+  $ groups
+  <your-user-name> sudo audio scanner saned
 
-# Apache user
-$ groups www-data
-www-data : www-data scanner saned
+  # Apache user
+  $ groups www-data
+  www-data : www-data scanner saned
 
-# should be member of 'scanner' group
-```
+  # should be member of 'scanner' group
+  ```
 
 * Apache logs
   ```
