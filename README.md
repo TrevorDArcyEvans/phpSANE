@@ -361,6 +361,12 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
   $ sudo cat /var/log/apache2/error.log
   ```
 
+## Supported scanners
+* http://www.sane-project.org/sane-mfgs.html
+* http://www.sane-project.org/lists/sane-backends-cvs.html
+
+Note that scanners may have different names in different markets
+
 ## Useful links
 * https://help.ubuntu.com/community/sane
 * https://help.ubuntu.com/community/Scanners
@@ -368,3 +374,5 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
 * https://help.ubuntu.com/community/sane_Troubleshooting
 * https://help.ubuntu.com/community/SettingScannerPermissions
 * http://www.zz9.co.za/howto-scanners-on-linuxraspberry-pi-project-sane/
+
+
