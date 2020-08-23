@@ -188,7 +188,8 @@ $ sudo nano /etc/udev/rules.d/55-libsane.rules
 ```
   Add following:
   ```
-  # from dmesg
+  # from dmesg or list of usb devices
+  # Primax Electronics, Ltd Xerox 2400 Onetouch
   ATTRS{idVendor}=="0461", ATTRS{idProduct}=="038b", MODE="0666", GROUP="scanner", ENV{libsane_matched}="yes"
   ```
   Note _idVendor_ and _idProduct_ are from `dmesg` log or list of usb devices
@@ -239,12 +240,12 @@ $ sudo cp ~/phpSANE/webroot /var/www/html
 $ sudo nano /etc/apache2/apache2.conf
 ```
 
-* CHECK add _Apache_ user to _scanner_ group
+* add _Apache_ user to _scanner_ group
 ```
 $sudo adduser www-data scanner
 ```
 
-* CHECK let _Apache_ user write files
+* let _Apache_ user write files
 ```
 $sudo chmod 775 /var/www/html/tmp
 $sudo chmod 775 /var/www/html/output
