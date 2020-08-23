@@ -168,7 +168,7 @@ $ dmesg
     * idVendor=0461
     * idProduct=038b
 
-* find scanner in usb devices
+* find scanner in list of usb devices
 ```
 $ lsusb
 Bus 001 Device 006: ID 148f:7601 Ralink Technology, Corp. MT7601U Wireless Adapter
@@ -204,7 +204,8 @@ $ sudo adduser www-data scanner
 $ sudo adduser <your-user-name> scanner
 ```
 
-* logout and login again so group membership takes effect
+* reboot so device is created by `udev` with correct group
+* login so group membership takes effect
 
 * check scanner is detected
 ```
@@ -319,7 +320,6 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
 
 </details>
 
-
 * What does webserver see?
 
     http://[your-server-ip]/diag.php
@@ -330,7 +330,7 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
   scanimage -L
   ```
 
-* Check device permissions
+* Check device ownership
   ```
   $ sudo scanimage -L
   device `genesys:libusb:001:004' is a Xerox OneTouch 2400 flatbed scanner
@@ -340,14 +340,26 @@ $ scanimage --mode Color --resolution 300 --format=jpeg > test001.jpg
   $ sudo ls -al /dev/bus/usb/001/004
   crw-rw-rw- 1 root scanner 189, 3 Aug 23 17:38 /dev/bus/usb/001/004
 
-  # device is owned by 'scanner' group'
+  # device should be owned by 'scanner' group
   ```
+
+* Check group membership
+```
+# you
+$ groups
+<your-user-name> sudo audio scanner saned
+
+# Apache user
+$ groups www-data
+www-data : www-data scanner saned
+
+# should be member of 'scanner' group
+```
 
 * Apache logs
   ```
   $ sudo cat /var/log/apache2/error.log
   ```
-
 
 ## Useful links
 * https://help.ubuntu.com/community/sane
