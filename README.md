@@ -143,14 +143,15 @@ Original README (English version) follows:
 </details>
 
 ## Installation on (Debian/Ubuntu) Linux
+* install pre-requisites
+```
+# assumes php7.3
+sudo apt install git php php7.3-zip apache2 libapache2-mod-php sane sane-utils libsane-extras poppler-utils imagemagick -y
+```
+
 * download code
 ```
 $ git clone https://github.com/christopherkobayashi/phpSANE.git
-```
-
-* install pre-requisites
-```
-sudo apt install php apache2 libapache2-mod-php sane sane-utils libsane-extras poppler-utils imagemagick -y
 ```
 
 * find scanner in (`dmesg`) boot log
@@ -250,6 +251,7 @@ $sudo adduser www-data scanner
 ```
 $sudo chmod 775 /var/www/html/tmp
 $sudo chmod 775 /var/www/html/output
+$sudo chmod 775 /var/www/html/scanners
 ```
 
 * restart webserver
