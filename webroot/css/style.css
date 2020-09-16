@@ -57,8 +57,7 @@ a:focus {
   padding-top: 0.4em;
   float: left;
   border: none;
-  width: 455px;
-  height: 95px;
+  height: 50%;
 }
 
 #header_menu {
